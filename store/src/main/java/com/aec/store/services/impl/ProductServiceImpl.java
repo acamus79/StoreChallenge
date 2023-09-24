@@ -61,7 +61,7 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
     @Transactional
     public ProductAdvancedDto saveProduct(ProductRegisterDto dto) {
 
-        if (repository.existsByName(dto.getName())) {
+        if (repository.existsByNameAndSoftDeleteFalse(dto.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with the same name already exists");
         }
         try{
@@ -84,6 +84,15 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
         }else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not Found");
         }
+    }
+
+    @Override
+    public boolean deleteProduct(String id) {
+        if (id != null && repository.existsById(id)) {
+            this.repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
 }

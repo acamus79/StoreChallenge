@@ -12,5 +12,5 @@ public interface ProductService extends BasicService<ProductEntity, String>{
     Page<ProductAdvancedDto> getProductToAdmin(Pageable pageable);
     ProductAdvancedDto saveProduct(ProductRegisterDto dto);
     ProductAdvancedDto updateProduct(ProductAdvancedDto dto, String id);
-
+    boolean deleteProduct(String id);
 }

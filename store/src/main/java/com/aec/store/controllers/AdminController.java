@@ -30,9 +30,6 @@ import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
 @Tag(name = "Admin Controller", description = "API endpoints for")
 public class AdminController {
 
-    public static final String DELETE_USER = "User deleted";
-    public static final String NO_DELETE_USER = "The user has not been deleted";
-
     private final UserService userService;
     private final ProductService productService;
 
@@ -80,5 +77,25 @@ public class AdminController {
         }
     }
 
+    @DeleteMapping("/products/{id}")
+    @PreAuthorize("hasAuthority('admin:delete')")
+    public ResponseEntity<Map<String, String>> deleteProducts(@PathVariable String id){
+        Map<String, String> response = new HashMap<>();
+        try {
+            if (productService.deleteProduct(id)) {
+                response.put("status", "success");
+                response.put("message", "The product was correctly removed");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Product could not be removed");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception ex) {
+            response.put("status", "error");
+            response.put("message", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 
 }

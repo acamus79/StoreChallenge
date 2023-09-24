@@ -34,7 +34,7 @@ public class UserServiceImpl extends BasicServiceImpl<UserEntity, String, UserRe
     @Override
     @Transactional
     public boolean deleteUser(String id) {
-        if (id != null) {
+        if (id != null && userRepository.existsById(id)) {
             this.userRepository.deleteById(id);
             return true;
         }
