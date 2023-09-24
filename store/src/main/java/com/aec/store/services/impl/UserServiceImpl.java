@@ -44,12 +44,10 @@ public class UserServiceImpl extends BasicServiceImpl<UserEntity, String, UserRe
     @Override
     @Transactional
     public BasicUserDto updateUser(UserRegisterDto dto, String id) {
-        System.out.println(id);
         if (this.findById(id).isPresent()){
             UserEntity user = this.findById(id).get();
             user.setFirstname(dto.getFirstname());
             user.setLastname(dto.getLastname());
-            user.setUpdatedAt(LocalDateTime.now());
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
             user.setRole(dto.getRole());
             this.save(user);

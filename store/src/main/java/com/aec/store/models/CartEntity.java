@@ -12,37 +12,52 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
+@SuppressWarnings("SqlDialectInspection")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "products")
-@SQLDelete(sql = "UPDATE products SET soft_delete = true WHERE id=?")
+@Table(name = "carts")
+@SQLDelete(sql = "UPDATE carts SET soft_delete = true WHERE id=?")
 @Where(clause = "soft_delete = false")
 @EntityListeners(AuditingEntityListener.class)
-public class ProductEntity implements Serializable {
+public class CartEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 165749843L;
+    private static final long serialVersionUID = 15749843L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 36)
     private String id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity userId;
 
-    private String description;
+//    @Column(nullable = false)
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "cart_products",
+//            joinColumns = @JoinColumn(name = "cart_id"),
+//            inverseJoinColumns = @JoinColumn(name = "product_id"))
+//    private List<ProductEntity> productsIds;
+
+    @ElementCollection
+    @CollectionTable(name = "cart_product_quantity", joinColumns = @JoinColumn(name = "cart_id"))
+    @MapKeyJoinColumn(name = "product_id")
+    @Column(name = "quantity")
+    private Map<ProductEntity, Integer> productQuantity = new HashMap<>();
+
+    private BigDecimal amount = BigDecimal.ZERO;
 
     @Column(nullable = false)
-    private BigDecimal price = BigDecimal.ZERO;
-
-    @Column(nullable = false)
-    private int quantityInStock;
+    private Boolean confirm = Boolean.FALSE;
 
     @Column(nullable = false)
     private Boolean softDelete = Boolean.FALSE;
@@ -64,17 +79,7 @@ public class ProductEntity implements Serializable {
         updatedAt = LocalDateTime.now();
     }
 
-    public void increaseStock(int quantityToAdd) {
-        if (quantityToAdd >= 0) {
-            this.quantityInStock += quantityToAdd;
-        }
-    }
-
-    public boolean decreaseStock(int quantityToDeduct) {
-        if (quantityToDeduct > 0 && this.quantityInStock >= quantityToDeduct) {
-            this.quantityInStock -= quantityToDeduct;
-            return true; // The decrease was successful
-        }
-        return false; // Not enough stock for the decrease
+    public void confirmCart() {
+        confirm = true;
     }
 }

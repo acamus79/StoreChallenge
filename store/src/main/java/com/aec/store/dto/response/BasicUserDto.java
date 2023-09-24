@@ -1,6 +1,5 @@
 package com.aec.store.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -8,7 +7,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Basic representation of the user with output data.")
+@Schema(description = "Basic representation of the User with output data.")
 public class BasicUserDto {
 
 	@Schema(description = "Id of the testimonials entity.", example = "528f22c3-1f9c-493f-8334-c70b83b5b885")

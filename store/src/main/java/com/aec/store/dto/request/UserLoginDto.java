@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "User representation with output data.")
+@Schema(description = "Representation of the input data required for authentication.")
 public class UserLoginDto {
 
     @Email(message = "Must be a properly formatted email address.")

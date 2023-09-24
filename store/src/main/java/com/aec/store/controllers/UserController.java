@@ -2,8 +2,11 @@ package com.aec.store.controllers;
 
 import com.aec.store.dto.request.UserRegisterDto;
 import com.aec.store.dto.response.BasicUserDto;
+import com.aec.store.dto.response.ProductAdvancedDto;
+import com.aec.store.dto.response.ProductBasicDto;
 import com.aec.store.models.UserEntity;
 import com.aec.store.services.JwtService;
+import com.aec.store.services.ProductService;
 import com.aec.store.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,8 +15,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +35,7 @@ import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-@Tag(name = "User Controller", description = "API endpoints for managing user data")
+@Tag(name = "User Controller", description = "API endpoints for client users.")
 public class UserController {
 
     public static final String DELETE_USER = "User deleted";
@@ -36,6 +43,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final ProductService productService;
 
     /**
      * Delete the currently logged-in user.
@@ -51,24 +59,22 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     public ResponseEntity<Map<String, String>> deleteCurrentUser(HttpServletRequest request) {
+        Map<String, String> response = new HashMap<>();
         try {
             String authorizationHeader = request.getHeader("Authorization");
             String token = authorizationHeader.substring("Bearer ".length());
             String username = jwtService.extractUsername(token);
             Optional<UserEntity> userOptional = userService.findByEmail(username);
             if (userOptional.isPresent() && userService.deleteUser(userOptional.get().getId())) {
-                Map<String, String> response = new HashMap<>();
                 response.put("status", "success");
                 response.put("message", DELETE_USER);
                 return ResponseEntity.ok(response);
             } else {
-                Map<String, String> response = new HashMap<>();
                 response.put("status", "error");
                 response.put("message", NO_DELETE_USER);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
         } catch (Exception ex) {
-            Map<String, String> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -130,12 +136,12 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<Map<String, Object>> getCurrentUser(HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
         try {
             String authorizationHeader = request.getHeader("Authorization");
             String token = authorizationHeader.substring("Bearer ".length());
             String username = jwtService.extractUsername(token);
             Optional<UserEntity> userOptional = userService.findByEmail(username);
-            Map<String, Object> response = new HashMap<>();
             if (userOptional.isPresent()) {
                 response.put("status", "success");
                 response.put("message", "User details retrieved successfully");
@@ -147,11 +153,17 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
         } catch (Exception ex) {
-            Map<String, Object> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", "Internal Server Error");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<Page<ProductBasicDto>> getProductsUser(
+            @PageableDefault(size = 25) Pageable page
+    ) {
+        return ResponseEntity.ok(productService.getProductToUser(page));
     }
 
 }
