@@ -3,11 +3,14 @@ package com.aec.store.models;
 import com.aec.store.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,10 +18,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -52,7 +57,24 @@ public class UserEntity implements Serializable, UserDetails {
     private Role role;
 
     @Column(nullable = false)
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
     private Boolean active = Boolean.TRUE;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = updatedAt = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -83,4 +105,5 @@ public class UserEntity implements Serializable, UserDetails {
     public boolean isEnabled() {
         return active;
     }
+
 }
