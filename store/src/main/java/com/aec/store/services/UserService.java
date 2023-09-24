@@ -10,8 +10,10 @@ import java.util.Optional;
 
 public interface UserService extends BasicService<UserEntity, String>{
     boolean deleteUser(String id);
-    BasicUserDto updateUser(UserRegisterDto userRegisterDto, String id);
+    BasicUserDto updateUser(UserRegisterDto dto, String id);
+    AdvancedUserDto getUserById(String id);
     List<AdvancedUserDto> getAll();
     Optional<UserEntity> findByEmail(String email);
+
 
 }

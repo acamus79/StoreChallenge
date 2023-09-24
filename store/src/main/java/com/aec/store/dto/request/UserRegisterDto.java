@@ -1,5 +1,6 @@
 package com.aec.store.dto.request;
 
+import com.aec.store.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,8 @@ import jakarta.validation.constraints.Size;
 @NoArgsConstructor
 @Schema(description = "User representation with input data.")
 public class UserRegisterDto {
+
+    private String id;
 
     @Schema(description = "The user's first name.", example = "Jhon")
     @Size(min = 3, max = 80, message = "The name must contain at least 3 and no more than 80 letters.")
@@ -34,4 +37,7 @@ public class UserRegisterDto {
     @Size(min = 6, max = 25, message = "Password size should be between 6 and 25 characters")
     @Schema(description = "The password that the user will have.", example = "MySuperSecretPwd@2023")
     private String password;
+
+    @Builder.Default
+    private Role role = Role.USER;
 }

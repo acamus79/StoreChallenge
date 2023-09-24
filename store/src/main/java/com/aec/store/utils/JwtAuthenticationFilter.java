@@ -1,4 +1,4 @@
-package com.aec.store.config;
+package com.aec.store.utils;
 
 import com.aec.store.services.JwtService;
 import jakarta.servlet.FilterChain;
