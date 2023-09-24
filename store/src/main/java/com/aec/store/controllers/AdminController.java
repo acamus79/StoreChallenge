@@ -46,6 +46,27 @@ public class AdminController {
         }
     }
 
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasAuthority('admin:delete')")
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable String id) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            if (userService.deleteUser(id)) {
+                response.put("status", "success");
+                response.put("message", DELETE_USER);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", "error");
+                response.put("message", NO_DELETE_USER);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception ex) {
+            response.put("status", "error");
+            response.put("message", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
     @GetMapping("/products")
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<Page<ProductAdvancedDto> > getProductsAdmin(
