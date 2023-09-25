@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Product representation with input data.")
-public class ProductRegisterDto {
+public class ProductRequestDto {
     @Hidden
     private String id;
 

@@ -1,6 +1,6 @@
 package com.aec.store.services.impl;
 
-import com.aec.store.dto.request.ProductRegisterDto;
+import com.aec.store.dto.request.ProductRequestDto;
 import com.aec.store.dto.response.ProductAdvancedDto;
 import com.aec.store.dto.response.ProductBasicDto;
 import com.aec.store.models.ProductEntity;
@@ -59,7 +59,7 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
 
     @Override
     @Transactional
-    public ProductAdvancedDto saveProduct(ProductRegisterDto dto) {
+    public ProductAdvancedDto saveProduct(ProductRequestDto dto) {
 
         if (repository.existsByNameAndSoftDeleteFalse(dto.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with the same name already exists");
@@ -75,10 +75,14 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
 
     @Override
     @Transactional
-    public ProductAdvancedDto updateProduct(ProductAdvancedDto dto, String id) {
+    public ProductAdvancedDto updateProduct(ProductRequestDto dto, String id) {
         Optional<ProductEntity> op = repository.findById(id);
         if (op.isPresent()){
-            ProductEntity productEntity = ObjectMapperUtils.map(dto, ProductEntity.class);
+            ProductEntity productEntity = op.get();
+            productEntity.setName(dto.getName());
+            productEntity.setDescription(dto.getDescription());
+            productEntity.setPrice(dto.getPrice());
+            productEntity.setQuantityInStock(dto.getQuantityInStock());
             this.edit(productEntity);
             return ObjectMapperUtils.map(productEntity, ProductAdvancedDto.class);
         }else {

@@ -13,11 +13,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-
-@SuppressWarnings("SqlDialectInspection")
+@SuppressWarnings("ALL")
 @Data
 @Builder
 @NoArgsConstructor
@@ -40,13 +38,6 @@ public class CartEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userId;
-
-//    @Column(nullable = false)
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "cart_products",
-//            joinColumns = @JoinColumn(name = "cart_id"),
-//            inverseJoinColumns = @JoinColumn(name = "product_id"))
-//    private List<ProductEntity> productsIds;
 
     @ElementCollection
     @CollectionTable(name = "cart_product_quantity", joinColumns = @JoinColumn(name = "cart_id"))

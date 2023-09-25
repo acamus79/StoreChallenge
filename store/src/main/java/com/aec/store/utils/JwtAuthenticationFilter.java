@@ -30,9 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * <p>Provides HttpServletRequest and HttpServletResponse arguments instead of the
      * default ServletRequest and ServletResponse ones.
      *
-     * @param request
-     * @param response
-     * @param filterChain
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param filterChain FilterChain
      */
     @Override
     protected void doFilterInternal(

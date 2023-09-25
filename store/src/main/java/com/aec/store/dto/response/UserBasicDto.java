@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Basic representation of the User with output data.")
-public class BasicUserDto {
+public class UserBasicDto {
 
 	@Schema(description = "Id of the testimonials entity.", example = "528f22c3-1f9c-493f-8334-c70b83b5b885")
 	private String id;

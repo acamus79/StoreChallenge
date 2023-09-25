@@ -1,7 +1,7 @@
 package com.aec.store.controllers;
 
-import com.aec.store.dto.request.ProductRegisterDto;
-import com.aec.store.dto.response.AdvancedUserDto;
+import com.aec.store.dto.request.ProductRequestDto;
+import com.aec.store.dto.response.UserAdvancedDto;
 import com.aec.store.dto.response.ProductAdvancedDto;
 import com.aec.store.services.ProductService;
 import com.aec.store.services.UserService;
@@ -35,7 +35,7 @@ public class AdminController {
 
     @GetMapping("/users/all")
     @PreAuthorize("hasAuthority('admin:read')")
-    public ResponseEntity<List<AdvancedUserDto>> getAll() {
+    public ResponseEntity<List<UserAdvancedDto>> getAll() {
         try {
             return new ResponseEntity<>(this.userService.getAll(), HttpStatus.OK);
         } catch (Exception ex) {
@@ -54,7 +54,7 @@ public class AdminController {
     @PostMapping("/products")
     @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<Map<String,Object>> createProduct(
-            @RequestBody @Valid ProductRegisterDto request,
+            @RequestBody @Valid ProductRequestDto request,
             Errors errors
     ){
         if(errors.hasErrors()){
@@ -94,6 +94,29 @@ public class AdminController {
         } catch (Exception ex) {
             response.put("status", "error");
             response.put("message", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @PutMapping("/products/{id}")
+    @PreAuthorize("hasAuthority('admin:update')")
+    public ResponseEntity<Map<String, Object>> updateProduct(
+            @PathVariable String id, @Valid @RequestBody ProductRequestDto request, Errors errors
+    ){
+        if(errors.hasErrors()){
+            return handleValidationErrors(errors);
+        }
+        Map<String, Object> response = new HashMap<>();
+        try{
+            ProductAdvancedDto dtoResponse = productService.updateProduct(request,id);
+            response.put("status", "success");
+            response.put("message", "User updated successfully");
+            response.put("user", dtoResponse);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e){
+            response.put("status", "error");
+            response.put("message", "Update failed");
+            response.put("error", e.getMessage().split("\"")[1]);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }

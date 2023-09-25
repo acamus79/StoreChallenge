@@ -1,7 +1,7 @@
 package com.aec.store.services.impl;
 
 import com.aec.store.dto.request.UserLoginDto;
-import com.aec.store.dto.request.UserRegisterDto;
+import com.aec.store.dto.request.UserRequestDto;
 import com.aec.store.enums.Role;
 import com.aec.store.models.UserEntity;
 import com.aec.store.repositories.UserRepository;
@@ -28,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public String register(UserRegisterDto request) {
+    public String register(UserRequestDto request) {
 
         if (this.repository.existsByEmail(request.getEmail())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The email " + request.getEmail() + " already exists");

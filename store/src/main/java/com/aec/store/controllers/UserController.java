@@ -1,10 +1,12 @@
 package com.aec.store.controllers;
 
-import com.aec.store.dto.request.UserRegisterDto;
-import com.aec.store.dto.response.BasicUserDto;
-import com.aec.store.dto.response.ProductAdvancedDto;
+import com.aec.store.dto.request.CartRequestDto;
+import com.aec.store.dto.request.UserRequestDto;
+import com.aec.store.dto.response.CartResponseDto;
+import com.aec.store.dto.response.UserBasicDto;
 import com.aec.store.dto.response.ProductBasicDto;
 import com.aec.store.models.UserEntity;
+import com.aec.store.services.CartService;
 import com.aec.store.services.JwtService;
 import com.aec.store.services.ProductService;
 import com.aec.store.services.UserService;
@@ -15,12 +17,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +46,7 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
     private final ProductService productService;
+    private final CartService cartService;
 
     /**
      * Delete the currently logged-in user.
@@ -63,9 +66,9 @@ public class UserController {
         try {
             String authorizationHeader = request.getHeader("Authorization");
             String token = authorizationHeader.substring("Bearer ".length());
-            String username = jwtService.extractUsername(token);
-            Optional<UserEntity> userOptional = userService.findByEmail(username);
-            if (userOptional.isPresent() && userService.deleteUser(userOptional.get().getId())) {
+            String userId = jwtService.extractClaim(token, claims -> claims.get("id", String.class));
+            Optional<UserEntity> userOptional = userService.findById(userId);
+            if (userOptional.isPresent() && userService.deleteUser(userId)) {
                 response.put("status", "success");
                 response.put("message", DELETE_USER);
                 return ResponseEntity.ok(response);
@@ -84,7 +87,7 @@ public class UserController {
     /**
      * Update an existing user by ID.
      *
-     * @param userRegisterDtoForm User registration data for update
+     * @param userRequestDtoForm User registration data for update
      * @param id                 ID of the user to update
      * @param errors             Validation errors, if any
      * @return ResponseEntity with updated user details
@@ -97,7 +100,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     public ResponseEntity<Map<String, Object>> update(
-            @Valid @RequestBody UserRegisterDto userRegisterDtoForm,
+            @Valid @RequestBody UserRequestDto userRequestDtoForm,
             @PathVariable String id,
             Errors errors) {
         ResponseEntity<Map<String, Object>> validationErrorsResponse = handleValidationErrors(errors);
@@ -107,10 +110,10 @@ public class UserController {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            BasicUserDto basicUserDto = this.userService.updateUser(userRegisterDtoForm, id);
+            UserBasicDto userBasicDto = this.userService.updateUser(userRequestDtoForm, id);
             response.put("status", "success");
             response.put("message", "User updated successfully");
-            response.put("user", basicUserDto);
+            response.put("user", userBasicDto);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("status", "error");
@@ -166,4 +169,33 @@ public class UserController {
         return ResponseEntity.ok(productService.getProductToUser(page));
     }
 
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> createOrUpdateCart(
+            @RequestBody @Valid CartRequestDto dto,
+            @RequestHeader("Authorization") String authToken, Errors errors
+    ) {
+        if(errors.hasErrors()){
+            return handleValidationErrors(errors);
+        }
+        Map<String, Object> response = new HashMap<>();
+//        if(authToken == null || !authToken.startsWith("Bearer ")){
+//            response.put("status", "error");
+//            response.put("message", "Registration failed");
+//            response.put("error", "Bearer token is required");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//        }
+        try {
+            String token = authToken.substring("Bearer ".length());
+            String userId = jwtService.extractClaim(token, claims -> claims.get("id", String.class));
+            response.put("status", "success");
+            response.put("message", "The shopping cart was created correctly.");
+            response.put("cart", cartService.createOrUpdateCart(dto, userId));
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            response.put("status", "error");
+            response.put("message", "Registration failed");
+            response.put("error", e.getMessage().split("\"")[1]);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

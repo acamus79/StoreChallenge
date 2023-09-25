@@ -1,8 +1,8 @@
 package com.aec.store.services.impl;
 
-import com.aec.store.dto.request.UserRegisterDto;
-import com.aec.store.dto.response.AdvancedUserDto;
-import com.aec.store.dto.response.BasicUserDto;
+import com.aec.store.dto.request.UserRequestDto;
+import com.aec.store.dto.response.UserAdvancedDto;
+import com.aec.store.dto.response.UserBasicDto;
 import com.aec.store.exceptions.ArgumentRequiredException;
 import com.aec.store.models.UserEntity;
 import com.aec.store.repositories.UserRepository;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +42,7 @@ public class UserServiceImpl extends BasicServiceImpl<UserEntity, String, UserRe
 
     @Override
     @Transactional
-    public BasicUserDto updateUser(UserRegisterDto dto, String id) {
+    public UserBasicDto updateUser(UserRequestDto dto, String id) {
         if (this.findById(id).isPresent()){
             UserEntity user = this.findById(id).get();
             user.setFirstname(dto.getFirstname());
@@ -51,25 +50,25 @@ public class UserServiceImpl extends BasicServiceImpl<UserEntity, String, UserRe
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
             user.setRole(dto.getRole());
             this.save(user);
-            return ObjectMapperUtils.map(user, BasicUserDto.class);
+            return ObjectMapperUtils.map(user, UserBasicDto.class);
         }else {
             throw new ArgumentRequiredException(IS_REQUIRED_OR_DOESNT_EXIST);
         }
     }
 
     @Override
-    public AdvancedUserDto getUserById(String id) {
+    public UserBasicDto getUserById(String id) {
         if (this.findById(id).isPresent()){
             UserEntity userFind = this.findById(id).get();
-            return ObjectMapperUtils.map(userFind, AdvancedUserDto.class)  ;
+            return ObjectMapperUtils.map(userFind, UserBasicDto.class)  ;
         }else {
             throw new ArgumentRequiredException(IS_REQUIRED_OR_DOESNT_EXIST);
         }
     }
 
     @Override
-    public List<AdvancedUserDto> getAll() {
-        List<AdvancedUserDto> usersDto = ObjectMapperUtils.mapAll(this.findAll(), AdvancedUserDto.class);
+    public List<UserAdvancedDto> getAll() {
+        List<UserAdvancedDto> usersDto = ObjectMapperUtils.mapAll(this.findAll(), UserAdvancedDto.class);
         if(usersDto.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }else {
@@ -81,6 +80,5 @@ public class UserServiceImpl extends BasicServiceImpl<UserEntity, String, UserRe
     public Optional<UserEntity> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
 
 }

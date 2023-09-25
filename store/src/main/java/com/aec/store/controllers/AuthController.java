@@ -1,7 +1,7 @@
 package com.aec.store.controllers;
 
 import com.aec.store.dto.request.UserLoginDto;
-import com.aec.store.dto.request.UserRegisterDto;
+import com.aec.store.dto.request.UserRequestDto;
 import com.aec.store.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,7 +41,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Registration failed or Validation failed")
     })
     public ResponseEntity<Map<String, Object>> register(
-            @RequestBody @Valid UserRegisterDto request,
+            @RequestBody @Valid UserRequestDto request,
             Errors errors
     ) {
         ResponseEntity<Map<String, Object>> validationErrorsResponse = handleValidationErrors(errors);

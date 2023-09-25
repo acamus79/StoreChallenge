@@ -1,9 +1,8 @@
 package com.aec.store.services.impl;
 
+import com.aec.store.models.UserEntity;
 import com.aec.store.services.JwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,9 +55,18 @@ public class JwtServiceImpl implements JwtService {
             UserDetails userDetails,
             long expiration
     ) {
+        Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof UserEntity userEntity) {
+            claims.put("id", userEntity.getId()); // Agregar el ID de usuario como claim personalizado
+        }
+
+        if (extraClaims != null) {
+            claims.putAll(extraClaims);
+        }
+
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
+                .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))

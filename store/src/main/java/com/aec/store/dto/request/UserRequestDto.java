@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "User representation with input data.")
-public class UserRegisterDto {
+public class UserRequestDto {
 
     @Hidden
     private String id;

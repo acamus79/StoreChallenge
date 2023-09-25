@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Detailed representation of the user with output data.")
-public class AdvancedUserDto {
+public class UserAdvancedDto {
 
     @Schema(description = "Id of the user entity.", example = "528f22c3-1f9c-493f-8334-c70b83b5b885")
     private String id;
