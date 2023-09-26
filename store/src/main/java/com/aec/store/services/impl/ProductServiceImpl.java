@@ -18,15 +18,31 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+/**
+ * Implementation of the ProductService interface providing operations related to products.
+ * This service handles operations such as retrieving products, creating, updating, and deleting products,
+ * as well as providing product data for both regular users and administrators.
+ */
 @Service
 public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, ProductRepository> implements ProductService {
 
+    /**
+     * Constructs a new ProductServiceImpl with the specified repository.
+     *
+     */
     private final ProductRepository repository;
     public ProductServiceImpl(ProductRepository repository) {
         super(repository);
         this.repository = repository;
     }
 
+    /**
+     * Retrieves a paginated list of basic product information suitable for regular users.
+     *
+     * @param pageable The Pageable object for pagination.
+     * @return A Page containing basic product information.
+     * @throws ResponseStatusException If no products are found.
+     */
     @Override
     public Page<ProductBasicDto> getProductToUser(Pageable pageable) {
         List<ProductEntity> productEntities = repository.findAll();
@@ -42,6 +58,13 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
         }
     }
 
+    /**
+     * Retrieves a paginated list of advanced product information suitable for administrators.
+     *
+     * @param pageable The Pageable object for pagination.
+     * @return A Page containing advanced product information.
+     * @throws ResponseStatusException If no products are found.
+     */
     @Override
     public Page<ProductAdvancedDto> getProductToAdmin(Pageable pageable) {
         List<ProductEntity> productEntities = repository.findAll();
@@ -57,6 +80,13 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
         }
     }
 
+    /**
+     * Creates a new product based on the provided data.
+     *
+     * @param dto The ProductRequestDto containing product details.
+     * @return The advanced product information of the created product.
+     * @throws ResponseStatusException If a product with the same name already exists or an error occurs during saving.
+     */
     @Override
     @Transactional
     public ProductAdvancedDto saveProduct(ProductRequestDto dto) {
@@ -73,6 +103,14 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
         }
     }
 
+    /**
+     * Updates an existing product with the provided data.
+     *
+     * @param dto The ProductRequestDto containing updated product details.
+     * @param id  The ID of the product to be updated.
+     * @return The advanced product information of the updated product.
+     * @throws ResponseStatusException If the product is not found.
+     */
     @Override
     @Transactional
     public ProductAdvancedDto updateProduct(ProductRequestDto dto, String id) {
@@ -90,7 +128,15 @@ public class ProductServiceImpl extends BasicServiceImpl<ProductEntity,String, P
         }
     }
 
+    /**
+     * Deletes a product with the specified ID.
+     *
+     * @param id The ID of the product to be deleted.
+     * @return True if the product is deleted successfully, false otherwise.
+     * @throws ResponseStatusException If the product is not found.
+     */
     @Override
+    @Transactional
     public boolean deleteProduct(String id) {
         if (id != null && repository.existsById(id)) {
             this.repository.deleteById(id);

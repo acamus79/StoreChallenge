@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.aec.store.utils.MessageConstants.*;
 import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
 
 @RestController
@@ -54,13 +55,13 @@ public class AuthController {
             String registrationResult = service.register(request);
 
             response.put("status", "success");
-            response.put("message", "User registered successfully");
+            response.put("message", USER_CREATED);
             response.put("token", registrationResult);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             response.put("status", "error");
-            response.put("message", "Registration failed");
+            response.put("message", REGISTRATION_FAILED);
             response.put("error", e.getMessage().split("\"")[1]);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
@@ -94,18 +95,17 @@ public class AuthController {
 
             if (authenticationResult.equals("Authentication failed")) {
                 response.put("status", "error");
-                response.put("message", "Authentication failed");
+                response.put("message", AUTH_FAILED);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-
             response.put("status", "success");
-            response.put("message", "Authentication successful");
+            response.put("message", AUTH_SUCCESS);
             response.put("token", authenticationResult);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("status", "error");
-            response.put("message", "Authentication failed");
+            response.put("message", AUTH_FAILED);
             response.put("error", e.getMessage().split("\"")[1]);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }

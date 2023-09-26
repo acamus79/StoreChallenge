@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<CartEntity, String> {
-    Optional<CartEntity> findByUserIdAndConfirmIsFalse(String userId);
+    Optional<CartEntity> findByUserIdAndConfirmIsFalseAndSoftDeleteIsFalse(String userId);
+
     List<CartEntity> findByUserIdAndConfirmIsTrue(String userId);
 
 }

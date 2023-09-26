@@ -8,19 +8,19 @@ import java.util.Optional;
 
 public interface BasicService<T, ID> {
 
-    public T save(T t);
+    T save(T t);
 
-    public Optional<T> findById(ID id);
+    Optional<T> findById(ID id);
 
-    public List<T> findAll();
+    List<T> findAll();
 
-    public Page<T> findAll(Pageable pageable);
+    Page<T> findAll(Pageable pageable);
 
-    public T edit(T t);
+    T edit(T t);
 
-    public void delete(T t);
+    void delete(T t);
 
-    public void deleteById(ID id);
+    void deleteById(ID id);
 
-    public boolean existById(ID id);
+    boolean existById(ID id);
 }

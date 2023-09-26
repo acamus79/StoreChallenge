@@ -77,4 +77,10 @@ public class ProductEntity implements Serializable {
         }
         return false; // Not enough stock for the decrease
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }

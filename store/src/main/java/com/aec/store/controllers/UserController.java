@@ -4,7 +4,6 @@ import com.aec.store.dto.request.CartRequestDto;
 import com.aec.store.dto.request.UserRequestDto;
 import com.aec.store.dto.response.CartResponseDto;
 import com.aec.store.dto.response.UserBasicDto;
-import com.aec.store.dto.response.ProductBasicDto;
 import com.aec.store.models.UserEntity;
 import com.aec.store.services.CartService;
 import com.aec.store.services.JwtService;
@@ -17,8 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import org.springframework.data.domain.Page;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -27,9 +25,11 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.aec.store.utils.MessageConstants.*;
 import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
 
 
@@ -39,9 +39,6 @@ import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
 @RequiredArgsConstructor
 @Tag(name = "User Controller", description = "API endpoints for client users.")
 public class UserController {
-
-    public static final String DELETE_USER = "User deleted";
-    public static final String NO_DELETE_USER = "The user has not been deleted";
 
     private final UserService userService;
     private final JwtService jwtService;
@@ -55,7 +52,10 @@ public class UserController {
      * @return ResponseEntity with status and message
      */
     @DeleteMapping
-    @Operation(summary = "Delete the currently logged-in user", description = "Delete the currently logged-in user")
+    @Operation(
+            summary = "Deletes the logged-in user.",
+            description = "Delete the currently logged-in user."
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User deleted successfully"),
             @ApiResponse(responseCode = "404", description = "User not found"),
@@ -70,7 +70,7 @@ public class UserController {
             Optional<UserEntity> userOptional = userService.findById(userId);
             if (userOptional.isPresent() && userService.deleteUser(userId)) {
                 response.put("status", "success");
-                response.put("message", DELETE_USER);
+                response.put("message", USER_DELETED);
                 return ResponseEntity.ok(response);
             } else {
                 response.put("status", "error");
@@ -93,7 +93,10 @@ public class UserController {
      * @return ResponseEntity with updated user details
      */
     @PutMapping("/{id}")
-    @Operation(summary = "Update an existing user", description = "Update an existing user account by ID")
+    @Operation(
+            summary = "Update an existing user",
+            description = "Update an existing user account by ID"
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated successfully"),
             @ApiResponse(responseCode = "404", description = "User not found"),
@@ -112,37 +115,37 @@ public class UserController {
         try {
             UserBasicDto userBasicDto = this.userService.updateUser(userRequestDtoForm, id);
             response.put("status", "success");
-            response.put("message", "User updated successfully");
+            response.put("message", USER_UPDATED);
             response.put("user", userBasicDto);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("status", "error");
-            response.put("message", "Registration failed");
+            response.put("message", USER_NOT_UPDATED);
             response.put("error", e.getMessage().split("\"")[1]);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-
     }
-
 
     /**
      * Get the currently logged-in user.
      *
-     * @param request HttpServletRequest containing user's authorization token
+     * @param authToken RequestHeader containing user's authorization token
      * @return ResponseEntity with the current user's details
      */
     @GetMapping("/current")
-    @Operation(summary = "Get the currently logged-in user", description = "Get details of the currently logged-in user")
+    @Operation(
+            summary = "Get the currently logged-in user",
+            description = "Get details of the currently logged-in user"
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User details retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public ResponseEntity<Map<String, Object>> getCurrentUser(HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> getCurrentUser(@RequestHeader("Authorization") String authToken) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String authorizationHeader = request.getHeader("Authorization");
-            String token = authorizationHeader.substring("Bearer ".length());
+            String token = authToken.substring("Bearer ".length());
             String username = jwtService.extractUsername(token);
             Optional<UserEntity> userOptional = userService.findByEmail(username);
             if (userOptional.isPresent()) {
@@ -162,15 +165,64 @@ public class UserController {
         }
     }
 
+    /**
+     * Get a paginated list of products for the currently logged-in user.
+     *
+     * @param page Pageable object for pagination
+     * @return ResponseEntity with a paginated list of ProductBasicDto objects
+     */
     @GetMapping("/products")
-    public ResponseEntity<Page<ProductBasicDto>> getProductsUser(
+    @Operation(
+            summary = "Get a paginated list of products for the currently logged-in user",
+            description = "Get a paginated list of products available to the currently logged-in user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No products found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    public ResponseEntity<?> getProductsUser(
             @PageableDefault(size = 25) Pageable page
     ) {
-        return ResponseEntity.ok(productService.getProductToUser(page));
+        Map<String, Object> response = new HashMap<>();
+        try{
+            response.put("status", "success");
+            response.put("message", PRODUCT_FOUND);
+            response.put("products", productService.getProductToUser(page));
+            return ResponseEntity.ok(response);
+        }catch (ResponseStatusException e){
+            response.put("status", "error");
+            response.put("message", PRODUCT_NOT_FOUND);
+            response.put("error", e.getMessage().split("\"")[1]);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }catch (Exception ex){
+            response.put("status", "error");
+            response.put("message", INTERNAL_SERVER_ERROR);
+            response.put("error", ex.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> createOrUpdateCart(
+    /**
+     * Create or update a user's shopping cart.
+     *
+     * @param dto      CartRequestDto containing cart details
+     * @param authToken RequestHeader containing user's authorization token
+     * @param errors   Validation errors, if any
+     * @return ResponseEntity with cart details
+     */
+    @PostMapping("/cart")
+    @Operation(
+            summary = "Create or update a user's shopping cart",
+            description = "Create or update a shopping cart for the currently logged-in user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shopping cart created or updated successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    public ResponseEntity<?> createOrUpdateCart(
             @RequestBody @Valid CartRequestDto dto,
             @RequestHeader("Authorization") String authToken, Errors errors
     ) {
@@ -178,24 +230,158 @@ public class UserController {
             return handleValidationErrors(errors);
         }
         Map<String, Object> response = new HashMap<>();
-//        if(authToken == null || !authToken.startsWith("Bearer ")){
-//            response.put("status", "error");
-//            response.put("message", "Registration failed");
-//            response.put("error", "Bearer token is required");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-//        }
+        if (dto.getProductQuantity().isEmpty()) {
+            response.put("status", "error");
+            response.put("message", PRODUCT_QUANTITY_EMPTY);
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         try {
             String token = authToken.substring("Bearer ".length());
             String userId = jwtService.extractClaim(token, claims -> claims.get("id", String.class));
             response.put("status", "success");
-            response.put("message", "The shopping cart was created correctly.");
+            response.put("message", CART_CREATED);
             response.put("cart", cartService.createOrUpdateCart(dto, userId));
+
             return ResponseEntity.ok(response);
-        }catch (Exception e){
+        }catch (ResponseStatusException e){
             response.put("status", "error");
-            response.put("message", "Registration failed");
+            response.put("message", REGISTRATION_FAILED);
             response.put("error", e.getMessage().split("\"")[1]);
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }catch (Exception ex){
+            response.put("status", "error");
+            response.put("message", INTERNAL_SERVER_ERROR);
+            response.put("error", ex.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * Delete a user's shopping cart by ID.
+     *
+     * @param id ID of the shopping cart to delete
+     * @return ResponseEntity with status and message
+     */
+    @DeleteMapping("/cart/{id}")
+    @Operation(
+            summary = "Delete a user's shopping cart by ID",
+            description = "Delete a shopping cart for the currently logged-in user by its ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shopping cart deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Shopping cart not found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    public ResponseEntity<?> deleteCart(@PathVariable String id){
+
+        Map<String, String> response = new HashMap<>();
+        try {
+            if (cartService.deleteCart(id)) {
+                response.put("status", "success");
+                response.put("message", CART_DELETED);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", "error");
+                response.put("message", CART_NOT_DELETED);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception ex) {
+            response.put("status", "error");
+            response.put("message", ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+    /**
+     * Get the confirmation false shopping cart for the currently logged-in user.
+     *
+     * @param authToken RequestHeader containing user's authorization token
+     * @return ResponseEntity with the user's shopping cart details
+     */
+    @GetMapping("/cart")
+    @Operation(
+            summary = "Obtain the pending shopping cart for the currently logged in user.",
+            description = "Get the details of the shopping cart for the currently logged-in user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shopping cart details retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Shopping cart not found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    public ResponseEntity<?> getCartForCurrentUser(@RequestHeader("Authorization") String authToken){
+        Map<String, Object> response = new HashMap<>();
+        try{
+            response.put("status", "success");
+            response.put("message", CART_FOUND);
+            response.put("cart", cartService.findByUserId(extractUserIdFromToken(authToken)));
+            return ResponseEntity.ok(response);
+        }catch (ResponseStatusException e){
+            response.put("status", "error");
+            response.put("message", USER_HAS_NO_ACTIVE_CART);
+            response.put("error", e.getMessage().split("\"")[1]);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }catch (Exception ex){
+            response.put("status", "error");
+            response.put("message", INTERNAL_SERVER_ERROR);
+            response.put("error", ex.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * Get confirmed purchases for the currently logged-in user.
+     *
+     * @param authToken RequestHeader containing user's authorization token
+     * @return ResponseEntity with confirmed purchases details
+     */
+    @GetMapping("/cart/confirm")
+    @Operation(
+            summary = "Get confirmed purchases for the currently logged-in user",
+            description = "Get confirmed purchases for the currently logged-in user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Confirmed purchases retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No confirmed purchases found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    public ResponseEntity<?> getCartConfirmForCurrentUser(@RequestHeader("Authorization") String authToken){
+        Map<String, Object> response = new HashMap<>();
+        try{
+            List<CartResponseDto> carts =cartService.findAllConfirmByUserId(extractUserIdFromToken(authToken));
+            response.put("status", "success");
+            response.put("message", CONFIRMED_PURCHASES_FOUND);
+            response.put("count", carts.size());
+            response.put("carts", carts);
+            return ResponseEntity.ok(response);
+        }catch (ResponseStatusException e){
+            response.put("status", "error");
+            response.put("message", USER_HAS_NO_CONFIRMED_PURCHASES);
+            response.put("error", e.getMessage().split("\"")[1]);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }catch (Exception ex){
+            response.put("status", "error");
+            response.put("message", INTERNAL_SERVER_ERROR);
+            response.put("error", ex.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * Extract the user ID from the authorization token.
+     *
+     * @param authToken RequestHeader containing user's authorization token
+     * @return Extracted user ID as a string
+     */
+    private String extractUserIdFromToken(String authToken) {
+        return jwtService.extractClaim(
+                authToken.substring("Bearer ".length()),
+                claims -> claims.get("id", String.class)
+        );
+    }
+
 }

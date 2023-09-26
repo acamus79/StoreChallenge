@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("ALL")
 @Data
 @Builder
 @NoArgsConstructor
@@ -35,9 +34,8 @@ public class CartEntity implements Serializable {
     @Column(length = 36)
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity userId;
+    @Column(name = "user_id", length = 36)
+    private String userId;
 
     @ElementCollection
     @CollectionTable(name = "cart_product_quantity", joinColumns = @JoinColumn(name = "cart_id"))
