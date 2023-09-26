@@ -37,7 +37,6 @@ public class SecurityConfig {
                 //Public routes without authentication
                 .requestMatchers(PUBLIC).permitAll()
 
-
                 //Admin Routes
                 .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name())
                 .requestMatchers(GET, "/api/v1/admin/**").hasAnyAuthority(ADMIN_READ.name())
