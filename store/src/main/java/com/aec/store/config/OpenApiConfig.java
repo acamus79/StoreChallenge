@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 ),
                 description = "OpenApi documentation for StoreChallenge API",
                 title = "Store Challenge - API REST",
-                version = "0.0.18",
+                version = "0.1.24",
                 license = @License(
                         name = "License Apache 2.0",
                         url = "https://www.apache.org/licenses/LICENSE-2.0.html"
