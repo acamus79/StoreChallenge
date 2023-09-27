@@ -16,7 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-
+/**
+ * Implementation of the {@link AuthenticationService} interface for user authentication and registration.
+ * This service provides methods for user registration and authentication, including generating JWT tokens
+ * for authenticated users.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -26,6 +30,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Registers a new user with the provided user details.
+     *
+     * @param request The user registration request containing user details.
+     * @return A JWT token generated for the registered user.
+     * @throws ResponseStatusException If the user's email already exists in the database.
+     */
     @Override
     @Transactional
     public String register(UserRequestDto request) {
@@ -46,6 +57,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtService.generateToken(user);
     }
 
+    /**
+     * Authenticates a user with the provided login credentials (email and password).
+     *
+     * @param request The user login request containing login credentials.
+     * @return A JWT token generated for the authenticated user.
+     * @throws ResponseStatusException If the user is not registered or if the provided credentials are invalid.
+     */
     @Override
     public String authenticate(UserLoginDto request) {
 
