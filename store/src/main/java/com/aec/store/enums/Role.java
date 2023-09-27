@@ -10,20 +10,39 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.aec.store.enums.Permission.*;
+
+/**
+ * Enumeration of roles with associated permissions.
+ */
 @RequiredArgsConstructor
 public enum Role {
-    USER(Collections.emptySet()),
-    ADMIN(Set.of(
-                    ADMIN_READ,
-                    ADMIN_UPDATE,
-                    ADMIN_DELETE,
-                    ADMIN_CREATE
-                )
-        );
 
+    /**
+     * User role with no specific permissions.
+     */
+    USER(Collections.emptySet()),
+
+    /**
+     * Admin role with a set of administrative permissions.
+     */
+    ADMIN(Set.of(
+            ADMIN_READ,
+            ADMIN_UPDATE,
+            ADMIN_DELETE,
+            ADMIN_CREATE
+    ));
+
+    /**
+     * The set of permissions associated with the role.
+     */
     @Getter
     private final Set<Permission> permissions;
 
+    /**
+     * Get the authorities associated with the role and its permissions.
+     *
+     * @return A list of authorities for the role.
+     */
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()
                 .stream()
@@ -32,5 +51,4 @@ public enum Role {
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return authorities;
     }
-
 }
