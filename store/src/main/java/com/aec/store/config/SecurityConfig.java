@@ -16,7 +16,9 @@ import static com.aec.store.enums.Role.*;
 import static com.aec.store.enums.Permission.*;
 import static org.springframework.http.HttpMethod.*;
 
-
+/**
+ * Configuration class for security settings in the application.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,27 +30,34 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC = {"/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources","/swagger-resources/**","/configuration/ui","/configuration/security","/swagger-ui/**","/webjars/**","/swagger-ui.html"};
 
+    /**
+     * Defines the security filter chain configuration.
+     *
+     * @param http The HttpSecurity object to configure security settings.
+     * @return The SecurityFilterChain object.
+     * @throws Exception If there's an error configuring security.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                //Public routes without authentication
+                // Public routes without authentication
                 .requestMatchers(PUBLIC).permitAll()
 
-                //Admin Routes
+                // Admin Routes
                 .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name())
                 .requestMatchers(GET, "/api/v1/admin/**").hasAnyAuthority(ADMIN_READ.name())
                 .requestMatchers(POST, "/api/v1/admin/**").hasAnyAuthority(ADMIN_CREATE.name())
                 .requestMatchers(PUT, "/api/v1/admin/**").hasAnyAuthority(ADMIN_UPDATE.name())
                 .requestMatchers(DELETE, "/api/v1/admin/**").hasAnyAuthority(ADMIN_DELETE.name())
                 .anyRequest()
-                    .authenticated()
+                .authenticated()
 
                 .and()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -13,7 +13,9 @@ import org.springframework.boot.CommandLineRunner;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
+/**
+ * Seeder for populating the database with initial data.
+ */
 @Component
 @RequiredArgsConstructor
 public class DatabaseSeeder implements CommandLineRunner{
@@ -22,6 +24,10 @@ public class DatabaseSeeder implements CommandLineRunner{
     private final PasswordEncoder passwordEncoder;
     private final ProductRepository productRepository;
 
+    /**
+     * Method executed on application startup.
+     * Populates the database with initial data if it's empty.
+     */
     @Override
     public void run(String... args) throws Exception {
         String password = passwordEncoder.encode("Clave123");
@@ -34,6 +40,9 @@ public class DatabaseSeeder implements CommandLineRunner{
         }
     }
 
+    /**
+     * Creates and saves product entities to the database.
+     */
     private void createProduct() {
         ProductEntity p1 = new ProductEntity(null, "XGt24", "Mouse Wireless", new BigDecimal("18.78"), 100, Boolean.FALSE, LocalDateTime.now(), LocalDateTime.now());
         productRepository.save(p1);
@@ -77,6 +86,9 @@ public class DatabaseSeeder implements CommandLineRunner{
         productRepository.save(p20);
     }
 
+    /**
+     * Creates and saves user entities to the database.
+     */
     private void createUser(String password) {
         UserEntity u1 = new UserEntity(null,"test@mail.com", password, "User", "Test", Role.USER, Boolean.TRUE, LocalDateTime.now(), LocalDateTime.now());
         userRepository.save(u1);
@@ -90,6 +102,9 @@ public class DatabaseSeeder implements CommandLineRunner{
         userRepository.save(u5);
     }
 
+    /**
+     * Creates and saves admin user entities to the database.
+     */
     private void createAdmin(String password) {
         UserEntity admin1 = new UserEntity(null, "admin@example.com", password, "Admin", "Root", Role.ADMIN, true, LocalDateTime.now(), LocalDateTime.now());
         userRepository.save(admin1);
