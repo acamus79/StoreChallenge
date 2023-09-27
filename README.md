@@ -12,8 +12,8 @@
 
 ## Project Description
 <a href="https://github.com/topics/java" target="_blank"><img align="center" alt="Made With JAVA"  src="https://img.shields.io/badge/Made%20With-Java-blue"></a>
-<a href="https://puppilots.com/api/swagger/" target="_blank"><img align="center" alt="SWAGGER DOC"  src="https://img.shields.io/badge/swagger-3.0-green"></a>
-<a href="https://documenter.getpostman.com/view/23097436/2s9Y5YT3HB#intro" target="_blank"><img align="center" alt="POSTMAN DOC"  src="https://img.shields.io/badge/Postman-ApiDoc-orange"></a>
+<a href="http://localhost:8080/api/swagger-ui/index.html" target="_blank"><img align="center" alt="SWAGGER DOC"  src="https://img.shields.io/badge/swagger-3.0-green"></a>
+<a href="https://documenter.getpostman.com/view/30103514/2s9YJZ3j89" target="_blank"><img align="center" alt="POSTMAN DOC"  src="https://img.shields.io/badge/Postman-ApiDoc-orange"></a>
 
 This project represents a Java-based REST API developed using the Spring Boot framework. Its primary purpose is to manage an online store and provide various functionalities for both users and administrators.
 
@@ -25,7 +25,7 @@ Through Postman and Swagger
 
 |       Document        |      Link   |
 |:-----------------------:|:-----------:|
-| POSTMAN |<a href="https://documenter.getpostman.com/view/21639215/UzBsHj42" target="_blank">LINK</a>|
+| POSTMAN |<a href="https://documenter.getpostman.com/view/30103514/2s9YJZ3j89" target="_blank">LINK</a>|
 | SWAGGER |<a href="http://localhost:8080/api/swagger-ui/index.html" target="_blank">LINK</a> (only if running)|
 
 <br>
@@ -65,7 +65,13 @@ Through Postman and Swagger
 ## Summary
 This project represents a robust and secure API developed in Java with Spring Boot, allowing users to manage products and shopping carts in an online store. It incorporates best practices in security, API documentation, and a modular approach that facilitates system maintenance and scalability.
 
+
+
 <a href="https://github.com/acamus79" target="_blank"><img align="center" alt="Works on myMachine" src="https://forthebadge.com/images/badges/works-on-my-machine.svg"></a>
+![#](https://github.com/acamus79/StoreChallenge/assets/85143329/3dd91f2c-5532-485f-aabc-fee0c4ed5cf6)
+
+
+
 _____
 
 
