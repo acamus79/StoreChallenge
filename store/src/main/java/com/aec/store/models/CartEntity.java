@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The entity represents a shopping cart.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -25,7 +28,6 @@ import java.util.Map;
 @Where(clause = "soft_delete = false")
 @EntityListeners(AuditingEntityListener.class)
 public class CartEntity implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 15749843L;
 
@@ -59,15 +61,27 @@ public class CartEntity implements Serializable {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    /**
+     * Callback method executed before persisting an entity.
+     * Sets the creation and modification date.
+     */
     @PrePersist
     protected void onCreate() {
         createdAt = updatedAt = LocalDateTime.now();
     }
+
+    /**
+     * Callback method executed before updating an entity.
+     * Updates the modification date.
+     */
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * Confirms the shopping cart by setting the "confirm" value to true.
+     */
     public void confirmCart() {
         confirm = true;
     }

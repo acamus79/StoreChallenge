@@ -13,7 +13,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
+/**
+ * The entity represents a product available in the store.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,7 +26,6 @@ import java.time.LocalDateTime;
 @Where(clause = "soft_delete = false")
 @EntityListeners(AuditingEntityListener.class)
 public class ProductEntity implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 165749843L;
 
@@ -55,21 +56,41 @@ public class ProductEntity implements Serializable {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    /**
+     * Callback method executed before persisting an entity.
+     * Sets the creation and modification date.
+     */
     @PrePersist
     protected void onCreate() {
         createdAt = updatedAt = LocalDateTime.now();
     }
+
+    /**
+     * Callback method executed before updating an entity.
+     * Updates the modification date.
+     */
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * Increases the stock of the product by the specified quantity.
+     *
+     * @param quantityToAdd The quantity to add to the stock.
+     */
     public void increaseStock(int quantityToAdd) {
         if (quantityToAdd >= 0) {
             this.quantityInStock += quantityToAdd;
         }
     }
 
+    /**
+     * Decreases the stock of the product by the specified quantity.
+     *
+     * @param quantityToDeduct The quantity to deduct from the stock.
+     * @return True if the decrease was successful, false if there's not enough stock.
+     */
     public boolean decreaseStock(int quantityToDeduct) {
         if (quantityToDeduct > 0 && this.quantityInStock >= quantityToDeduct) {
             this.quantityInStock -= quantityToDeduct;
@@ -78,9 +99,13 @@ public class ProductEntity implements Serializable {
         return false; // Not enough stock for the decrease
     }
 
+    /**
+     * Overrides the default toString() method to return the product name.
+     *
+     * @return The name of the product.
+     */
     @Override
     public String toString() {
         return name;
     }
-
 }

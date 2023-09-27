@@ -16,6 +16,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+/**
+ * The entity represents a user in the application.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,7 +29,6 @@ import java.util.Collection;
 @Where(clause = "active = true")
 @EntityListeners(AuditingEntityListener.class)
 public class UserEntity implements Serializable, UserDetails {
-
     @Serial
     private static final long serialVersionUID = 165749843L;
 
@@ -61,43 +63,81 @@ public class UserEntity implements Serializable, UserDetails {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    /**
+     * Callback method executed before persisting an entity.
+     * Sets the creation and modification date.
+     */
     @PrePersist
     protected void onCreate() {
         createdAt = updatedAt = LocalDateTime.now();
     }
+
+    /**
+     * Callback method executed before updating an entity.
+     * Updates the modification date.
+     */
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * Returns the authorities associated with the user's role.
+     *
+     * @return A collection of granted authorities.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
     }
 
+    /**
+     * Returns the username of the user, which is their email.
+     *
+     * @return The user's email.
+     */
     @Override
     public String getUsername() {
         return email;
     }
 
+    /**
+     * Indicates whether the user's account has not expired.
+     *
+     * @return Always returns true.
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * Indicates whether the user's account is not locked.
+     *
+     * @return Always returns true.
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     * Indicates whether the user's credentials (password) have not expired.
+     *
+     * @return Always returns true.
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * Indicates whether the user is currently enabled (active).
+     *
+     * @return True if the user is active; false otherwise.
+     */
     @Override
     public boolean isEnabled() {
         return active;
     }
-
 }
