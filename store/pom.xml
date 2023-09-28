@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.aec</groupId>
 	<artifactId>store</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.8-SNAPSHOT</version>
 	<name>midas</name>
 	<description>Spring Boot demo project with security for a Midas challenge</description>
 	<properties>
