@@ -3,7 +3,7 @@ version: '3.9'
 services:
   java_api:
     container_name: java-api
-    image: aec-api-store:1.0.0
+    image: acamus79/aec-api-store:latest
     build: .
     ports:
       - 8080:8080
