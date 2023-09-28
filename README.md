@@ -64,20 +64,49 @@ Through Postman and Swagger
 </p>
 
 ## Docker
-If you have docker from the root directory, you can run the command ```docker pull acamus79/aec-api-store:latest```, to download the compiled image from my personal docker hub repository, then simply run the command ```docker-compose up```
+If you have docker from the root directory, you can run the command ```docker-compose up```, to download the compiled image from my personal docker hub repository along with the database
 
-If you don't want to download the compiled image, you will have to package the application with maven and create your own image and then pull it up with docker compose.
-```
-cd store
-mvn clean package -DskipTests
-cd..
-docker build -t aec-api-store:1.0.8 .
-docker-compose up
-```
 
 If you do not want to use Docker to run the application you must configure the data source by configuring the connection to a postgres database in the yml configuration file; and then you can run the command ```mvn spring-boot:run```
 
 ![imagen](https://github.com/acamus79/StoreChallenge/assets/85143329/57935ff2-ed68-461b-aadf-2014521fb610)
+
+
+# A data seeder was included to facilitate testing:
+
+| Código  | Nombre                | Precio  |
+|---------|-----------------------|---------|
+| XGt24   | Mouse Wireless        | 18.78   |
+| KBp72   | Mechanical Keyboard   | 89.99   |
+| HDt56   | 2TB Hard Drive        | 149.99  |
+| Spk12   | Bluetooth Speaker     | 29.95   |
+| HPh44   | Wireless Headphones   | 59.99   |
+| Mntr22  | 27-inch Monitor       | 249.99  |
+| Cmra10  | Security Camera       | 79.99   |
+| Drn88   | Drone with Camera     | 199.99  |
+| GmC23   | Gaming Console        | 299.99  |
+| Prnt17  | Wireless Printer      | 129.95  |
+| PhnX1   | Smartphone            | 599.99  |
+| TbM17   | Tablet                | 349.99  |
+| LpSv5   | Laptop                | 899.99  |
+| SpPd9   | Spinning Pedals       | 79.95   |
+| HlthTrk2| Health Tracker        | 49.99   |
+| VrHd4   | Virtual Reality Headset | 149.99 |
+| DgtCmr8 | Digital Camera        | 199.95  |
+| SprSpd6 | Spray Paint Set       | 19.99   |
+| BkShlf3 | Bookshelf             | 129.99  |
+| CmptrDsk1| Computer Desk         | 199.99  |
+
+
+| Email                  | Nombre   | Apellido  | Rol     |
+|------------------------|----------|-----------|---------|
+| test@mail.com          | User     | Test      | User    |
+| rosebaldwin@mail.com   | Rose     | Baldwin   | User    |
+| stephenmorris@mail.com | Stephen  | Morris    | User    |
+| rachelturner@mail.com  | Rachel   | Turner    | User    |
+| geraldhunter@mail.com  | Gerald   | Hunter    | User    |
+| admin@example.com      | Admin    | Root      | Admin   |
+| admin2@example.com     | Sarah    | Admin     | Admin   |
 
 
 
