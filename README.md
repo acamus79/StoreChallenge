@@ -1,13 +1,7 @@
 <p align="center">
-<a href="#" target="_blank"><img src="https://github.com/acamus79/StoreChallenge/assets/85143329/e933ede2-eae8-49e3-b13b-0a57761c04d3" width="200"></a>
+<a href="#" target="_blank"><img src="https://github.com/acamus79/StoreChallenge/assets/85143329/11117597-0502-4b99-af3e-1656440e379b" width="200"></a>
 </p>
 <h1 align="center">API REST StoreChallenge</h1>
-<p align="center">
- <a href="https://acamus79.github.io" target="_blank"><img align="center" alt="Portfolio"  src="https://forthebadge.com/images/badges/built-with-love.svg"></a>
- <a href="#" target="_blank"><img align="center" alt="Daugther"  src="https://github.com/acamus79/StoreChallenge/assets/85143329/3dd91f2c-5532-485f-aabc-fee0c4ed5cf6"></a>
- <a href="#" target="_blank"><img align="center" alt="myMachine"  src="https://github.com/acamus79/StoreChallenge/assets/85143329/61ea1993-9d83-496c-b77c-2ca24c07cd5a"></a>
-</p>
-
 
 * :argentina: Adrian Camus [LinkedIn](https://www.linkedin.com/in/acamus79/ ) - [GitHub](https://github.com/acamus79)
 
@@ -26,8 +20,6 @@ This project represents a robust and feature-rich Java-based REST API developed 
 - **Product Catalog:** Maintain an extensive product catalog with detailed information, including product names, descriptions, pricing, and stock levels. Keep your offerings up-to-date and organized for a superior shopping experience.
 
 - **Shopping Cart:** Facilitate smooth and convenient shopping journeys with a robust shopping cart system. Users can add, update, and remove items from their carts, ensuring a hassle-free purchasing process.
-
-- **Order Processing:** Implement a comprehensive order processing system that allows users to place orders with ease. Administrators can efficiently manage and fulfill orders, providing customers with timely updates and tracking information.
 
 - **Security:** Prioritize the security of user data and transactions. Utilize industry-standard practices to protect sensitive information and secure communications.
 
@@ -67,8 +59,8 @@ Through Postman and Swagger
 
 <br>
 <p align="center">
- <a href="#" target="_blank"><img src="https://github.com/acamus79/StoreChallenge/assets/85143329/2ae42506-cc83-4c97-b15a-1a06f08fd0a6" height="300"></a>
- <a href="#" target="_blank"><img src="https://github.com/acamus79/StoreChallenge/assets/85143329/5bc5d4b2-45b3-4b1b-ab7b-3395483049b3" height="300"></a>
+ <a href="#" target="_blank"><img src="https://github.com/acamus79/StoreChallenge/assets/85143329/fd6d3ce7-0e76-4562-a11b-3d0efe392750" height="300"></a>
+ <a href="#" target="_blank"><img src="https://github.com/acamus79/StoreChallenge/assets/85143329/0fb86a36-7f89-470f-962e-cf1a712c4572" height="300"></a>
 </p>
 
 ## Docker
@@ -85,11 +77,16 @@ docker-compose up
 
 If you do not want to use Docker to run the application you must configure the data source by configuring the connection to a postgres database in the yml configuration file; and then you can run the command ```mvn spring-boot:run```
 
-![image](https://github.com/acamus79/StoreChallenge/assets/85143329/7ca7e04f-2f68-4e4d-b147-0bf20352e22d)
+![imagen](https://github.com/acamus79/StoreChallenge/assets/85143329/57935ff2-ed68-461b-aadf-2014521fb610)
+
 
 
 ## Summary
 This project represents a robust and secure API developed in Java with Spring Boot, allowing users to manage products and shopping carts in an online store. It incorporates best practices in security, API documentation, and a modular approach that facilitates system maintenance and scalability.
 _____
-
+<p align="center">
+ <a href="https://acamus79.github.io" target="_blank"><img align="center" alt="Portfolio"  src="https://forthebadge.com/images/badges/built-with-love.svg"></a>
+ <a href="#" target="_blank"><img align="center" alt="Daugther"  src="https://github.com/acamus79/StoreChallenge/assets/85143329/f5dda3bd-81cb-4ece-9a60-4c7ae215fa88"></a>
+ <a href="#" target="_blank"><img align="center" alt="myMachine"  src="https://github.com/acamus79/StoreChallenge/assets/85143329/5f6c41aa-4209-44b4-8eb7-62f6163c23a7"></a>
+</p>
 
