@@ -3,6 +3,7 @@ package com.aec.store.controllers;
 import com.aec.store.dto.request.ProductRequestDto;
 import com.aec.store.dto.response.UserAdvancedDto;
 import com.aec.store.dto.response.ProductAdvancedDto;
+import com.aec.store.models.UserEntity;
 import com.aec.store.services.CartService;
 import com.aec.store.services.ProductService;
 import com.aec.store.services.UserService;
@@ -24,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.aec.store.utils.MessageConstants.*;
 import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
@@ -68,6 +70,43 @@ public class AdminController {
             response.put("status", "error");
             response.put("message", USER_NOT_FOUND);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    /**
+     * Delete one user by ID.
+     *
+     * @param id The ID of the user to delete.
+     * @return ResponseEntity containing a map with status and message.
+     */
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasAuthority('admin:delete')")
+    @Operation(
+            summary = "Deletes an user by ID.",
+            description = "Delete one user by ID."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    public ResponseEntity<Map<String, String>> deleteCurrentUser(@PathVariable String id) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Optional<UserEntity> userOptional = userService.findById(id);
+            if (userOptional.isPresent() && userService.deleteUser(id)) {
+                response.put("status", "success");
+                response.put("message", USER_DELETED);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", "error");
+                response.put("message", NO_DELETE_USER);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception ex) {
+            response.put("status", "error");
+            response.put("message", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
