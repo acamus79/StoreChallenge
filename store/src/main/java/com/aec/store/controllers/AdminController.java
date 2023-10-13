@@ -31,7 +31,7 @@ import static com.aec.store.utils.MessageConstants.*;
 import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1/data")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 @Tag(name = "Admin Controller", description = "API endpoints for")

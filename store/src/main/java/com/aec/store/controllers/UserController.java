@@ -35,7 +35,7 @@ import static com.aec.store.utils.ValidationUtils.handleValidationErrors;
 
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 @Tag(name = "User Controller", description = "API endpoints for client users.")
 public class UserController {

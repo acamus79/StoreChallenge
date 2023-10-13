@@ -47,11 +47,11 @@ public class SecurityConfig {
                 .requestMatchers(PUBLIC).permitAll()
 
                 // Admin Routes
-                .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name())
-                .requestMatchers(GET, "/api/v1/admin/**").hasAnyAuthority(ADMIN_READ.name())
-                .requestMatchers(POST, "/api/v1/admin/**").hasAnyAuthority(ADMIN_CREATE.name())
-                .requestMatchers(PUT, "/api/v1/admin/**").hasAnyAuthority(ADMIN_UPDATE.name())
-                .requestMatchers(DELETE, "/api/v1/admin/**").hasAnyAuthority(ADMIN_DELETE.name())
+                .requestMatchers("/api/v1/data/**").hasAnyRole(ADMIN.name())
+                .requestMatchers(GET, "/api/v1/data/**").hasAnyAuthority(ADMIN_READ.name())
+                .requestMatchers(POST, "/api/v1/data/**").hasAnyAuthority(ADMIN_CREATE.name())
+                .requestMatchers(PUT, "/api/v1/data/**").hasAnyAuthority(ADMIN_UPDATE.name())
+                .requestMatchers(DELETE, "/api/v1/data/**").hasAnyAuthority(ADMIN_DELETE.name())
                 .anyRequest()
                 .authenticated()
 
